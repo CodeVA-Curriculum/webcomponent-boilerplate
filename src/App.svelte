@@ -3,28 +3,17 @@
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<div class='section has-text-centered'>
+		<div class='container'>
+			<h1 class=title>Hello!</h1>
+			<p class='block'>Visit <a href='https://github.com/CodeVA-Curriculum/webcomponent-boilerplate'>this link</a> for info about how to use this boilerplate.</p>
+			<a href="https://github.com/CodeVA-Curriculum/webcomponent-boilerplate">
+				<button class='button is-primary'>Read the Docs</button>
+			</a>
+		</div>
+	</div>
 </main>
 
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+<style type="text/scss" global>
+	@import "./main.scss";
 </style>
