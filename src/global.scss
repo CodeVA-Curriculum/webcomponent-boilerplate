@@ -1,9 +1,7 @@
+@charset "utf-8";
 
-//TODO: Figure out how to host local fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway&display=swap");
-
-// Set variables
-$family-sans-serif: "Raleway";
+// restore default behaviour
+$body-overflow-y: auto;
 
 // Import only what you need from Bulma
 @import "../node_modules/bulma/sass/utilities/_all";
@@ -15,4 +13,3 @@ $family-sans-serif: "Raleway";
 @import "../node_modules/bulma/sass/helpers/_all";
 @import "../node_modules/bulma/sass/layout/_all";
 
-// Import Bulma extensions

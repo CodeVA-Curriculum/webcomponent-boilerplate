@@ -1,19 +1,29 @@
+<svelte:options tag="svelte-component-ts" />
+
 <script>
-	export let name;
+    import Hello from './components/Hello.svelte';
+    import { reverse } from './utils/reverse';
+    let message = 'Hello world!';
 </script>
 
-<main>
-	<div class='section has-text-centered'>
-		<div class='container'>
-			<h1 class=title>Hello!</h1>
-			<p class='block'>Visit <a href='https://github.com/CodeVA-Curriculum/webcomponent-boilerplate'>this link</a> for info about how to use this boilerplate.</p>
-			<a href="https://github.com/CodeVA-Curriculum/webcomponent-boilerplate">
-				<button class='button is-primary'>Read the Docs</button>
-			</a>
-		</div>
-	</div>
-</main>
+<div class="un-scoped-class">
+    <div class='section has-text-centered'>
+        <h1 class='title'>{message}</h1> 
+        <button class='button'>Click Me!</button>
+        <Hello />
+    </div>
+    
+</div>
 
-<style type="text/scss" global>
-	@import "./main.scss";
+<!-- We need both of these for some reason?? -->
+<svelte:head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+</svelte:head>
+
+<style>
+    @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
+    /* Some styles are needed to be able to inject sub styles currently, probably need to hack more to avoid this requirement 🤷‍♂️*/
+    .un-scoped-class {
+        background-color: inherit;
+    }
 </style>
