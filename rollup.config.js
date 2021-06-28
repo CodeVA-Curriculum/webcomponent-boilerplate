@@ -1,83 +1,110 @@
 import svelte from 'rollup-plugin-svelte';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
-import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
-import css from 'rollup-plugin-css-only';
 import sveltePreprocess from 'svelte-preprocess';
+import typescript from '@rollup/plugin-typescript';
+import css from './.rollup/css-only'; // a modified version of "rollup-plugin-css-only"
+import { serve } from './.rollup/serve';
+import replace from '@rollup/plugin-replace';
+import babel from 'rollup-plugin-babel';
 
+const bundleName = 'bundle';
+const bundleFile = `${bundleName}.js`;
 const production = !process.env.ROLLUP_WATCH;
-
-function serve() {
-	let server;
-
-	function toExit() {
-		if (server) server.kill(0);
-	}
-
-	return {
-		writeBundle() {
-			if (server) return;
-			server = require('child_process').spawn('npm', ['run', 'start', '--', '--dev'], {
-				stdio: ['ignore', 'inherit', 'inherit'],
-				shell: true
-			});
-
-			process.on('SIGTERM', toExit);
-			process.on('exit', toExit);
-		}
-	};
-}
+const extensions = ['.svelte', '.ts', '.js', '.mjs'];
 
 export default {
-	input: 'src/main.js',
-	output: {
-		sourcemap: true,
-		format: 'iife',
-		name: 'app',
-		file: 'public/build/bundle.js'
-	},
-	plugins: [
-		svelte({
-			preprocess: sveltePreprocess({
-				postcss: {
-					plugins: [require('autoprefixer')()]
-				}
-			}),
-			compilerOptions: {
-				// enable run-time checks when not in production
-				dev: !production,
-				
-			}
-		}),
-		// we'll extract any component CSS out into
-		// a separate file - better for performance
-		css({ output: 'bundle.css' }),
+    input: 'src/index.ts',
+    output: [
+        {
+            sourcemap: true,
+            format: 'iife',
+            name: bundleName,
+            file: `public/${bundleFile}`,
+            plugins: [production && terser()],
+        },
+    ],
+    plugins: [
+        svelte({
+            preprocess: sveltePreprocess({ sourceMap: !production }),
+            compilerOptions: {
+                dev: !production,
+                customElement: true,
+            },
+            emitCss: false,
+            include: './src/ShadowRoot.svelte',
+        }),
 
-		// If you have external dependencies installed from
-		// npm, you'll most likely need these plugins. In
-		// some cases you'll need additional configuration -
-		// consult the documentation for details:
-		// https://github.com/rollup/plugins/tree/master/packages/commonjs
-		resolve({
-			browser: true,
-			dedupe: ['svelte']
-		}),
-		commonjs(),
+        svelte({
+            preprocess: sveltePreprocess({ sourceMap: !production }),
+            compilerOptions: {
+                dev: !production,
+            },
+            emitCss: true,
+            exclude: './src/ShadowRoot.svelte',
+        }),
 
-		// In dev mode, call `npm run start` once
-		// the bundle has been generated
-		!production && serve(),
+        css({
+            output(styles, styleNodes, bundle) {
+                const match = production
+                    ? `.shadowRoot.innerHTML="`
+                    : `.shadowRoot.innerHTML = "`;
 
-		// Watch the `public` directory and refresh the
-		// browser on changes when not in production
-		!production && livereload('public'),
+                const currentBundle = bundle[bundleFile];
+                currentBundle.code = currentBundle.code.replace(
+                    match,
+                    `${match}<style>${styles}</style>`
+                );
+            },
+        }),
 
-		// If we're building for production (npm run build
-		// instead of npm run dev), minify
-		production && terser()
-	],
-	watch: {
-		clearScreen: false
-	}
+        resolve({
+            browser: true,
+            dedupe: ['svelte'],
+            extensions,
+        }),
+        commonjs(),
+        typescript({
+            sourceMap: !production,
+            inlineSources: !production,
+        }),
+
+        !production && serve(),
+
+        // add transition into shadow dom
+        replace({
+            '.ownerDocument': '.getRootNode()',
+            delimiters: ['', ''],
+        }),
+        replace({
+            '.head.appendChild': '.appendChild',
+            delimiters: ['', ''],
+        }),
+        babel({
+            extensions,
+            exclude: 'node_modules/**',
+            plugins: ['@babel/plugin-proposal-class-properties'],
+            presets: [
+                [
+                    '@babel/preset-env',
+                    {
+                        // loose: true,
+                        // // No need for babel to resolve modules
+                        modules: false,
+                        targets: {
+                            // ! Very important. Target es6+
+                            esmodules: true,
+                        },
+                    },
+                ],
+                '@babel/preset-typescript',
+            ],
+        }),
+    ],
+    watch: {
+        chokidar: true,
+        clearScreen: false,
+        buildDelay: 1000,
+    },
 };
