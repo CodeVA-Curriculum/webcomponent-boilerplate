@@ -16,6 +16,7 @@
 </div>
 
 <!-- We need both of these for some reason?? -->
+<!-- The solution might be to enter our own style info onto the site, but I haven't tested that yet and this is pretty okay -->
 <svelte:head>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
 </svelte:head>
