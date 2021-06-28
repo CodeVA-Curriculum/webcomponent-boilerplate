@@ -27,6 +27,7 @@
     },
     "homepage": "https://github.com/stefanonepa/svelte-component-ts#readme",
     "dependencies": {
+        "bulma": "^0.9.3",
         "core-js": "^3.8.3",
         "tslib": "^2.1.0"
     },
@@ -51,7 +52,7 @@
         "rollup-plugin-copy": "^3.3.0",
         "rollup-plugin-svelte": "^7.1.0",
         "rollup-plugin-terser": "^7.0.2",
-        "sass": "^1.32.6",
+        "sass": "^1.35.1",
         "sirv-cli": "^1.0.0",
         "svelte": "^3.32.1",
         "svelte-check": "^1.1.32",

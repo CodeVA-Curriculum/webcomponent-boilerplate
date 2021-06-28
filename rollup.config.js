@@ -33,7 +33,7 @@ export default {
                 customElement: true,
             },
             emitCss: false,
-            include: './src/ShadowRoot.svelte',
+            include: './src/App.svelte',
         }),
 
         svelte({
@@ -42,7 +42,7 @@ export default {
                 dev: !production,
             },
             emitCss: true,
-            exclude: './src/ShadowRoot.svelte',
+            exclude: './src/App.svelte',
         }),
 
         css({
