@@ -2,7 +2,6 @@
 
 <script>
     import Hello from './components/Hello.svelte';
-    import { reverse } from './utils/reverse';
     let message = 'Hello world!';
 </script>
 
